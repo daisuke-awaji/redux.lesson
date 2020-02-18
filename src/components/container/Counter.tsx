@@ -76,17 +76,62 @@ import React from "react";
 // (4) react-redux の hooks を使用してみる
 // また Stateless Component から少し遠ざかるが connect を使用しなくて良いし、記述量は減って良い感じ
 // https://levelup.gitconnected.com/react-redux-hooks-useselector-and-usedispatch-f7d8c7f75cdd
-import { useSelector } from "react-redux";
-import CountUpButton from "./CountUpButton";
-import CountDownButton from "./CountDownButton";
+// import { useSelector, useDispatch } from "react-redux";
+// import CountUpButton from "./CountUpButton";
+// import CountDownButton from "./CountDownButton";
+// import { IRootState } from "../../store/reducer";
+// import { INCREMENT } from "../../store/actions/counterActions";
 
-export default () => {
-  const count = useSelector((state: any) => state.count);
+// export default () => {
+//   const count = useSelector((state: any) => state.count);
+//   return (
+//     <div>
+//       <h3>count: {count}</h3>
+//       <CountUpButton />
+//       <CountDownButton />
+//     </div>
+//   );
+// };
+
+// (5) Reduxhookを使用しても Redux と React を分離する
+import { useSelector, useDispatch } from "react-redux";
+import { IRootState } from "../../store/reducer";
+import { INCREMENT, DECREMENT } from "../../store/actions/counterActions";
+import { Dispatch } from "redux";
+
+interface ICounterProps {
+  count: number;
+  handleClickIncrement: Dispatch;
+  handleClickDecrement: Dispatch;
+}
+// Storybookなどでコンポーネントの振る舞いを検証しやすくするために
+// StatelessでPresentatinaComponentを作っておく。
+// Reduxとの接合はDIする。
+export const StatelessPresentationalCounterComponent = (
+  props: ICounterProps
+) => {
+  const { count, handleClickIncrement, handleClickDecrement } = props;
   return (
     <div>
       <h3>count: {count}</h3>
-      <CountUpButton />
-      <CountDownButton />
+      <button data-test="count-up" onClick={handleClickIncrement}>
+        ⬆︎
+      </button>
+      <button data-test="count-down" onClick={handleClickDecrement}>
+        ⬇︎
+      </button>
     </div>
   );
 };
+
+export default function ContainerCounterComponent(ownProps: any) {
+  const count = useSelector<IRootState>(state => state.count);
+  const dispatch = useDispatch();
+  const _props = {
+    count,
+    handleClickIncrement: () => dispatch({ type: INCREMENT }),
+    handleClickDecrement: () => dispatch({ type: DECREMENT }),
+    ...ownProps
+  };
+  return <StatelessPresentationalCounterComponent {..._props} />;
+}
