@@ -1,6 +1,5 @@
 // import React, { useState } from "react";
 import React from "react";
-import { INCREMENT, DECREMENT } from "../../store/actions/counterActions";
 // import { connect } from "react-redux";
 // import { Dispatch } from "redux";
 
@@ -77,27 +76,17 @@ import { INCREMENT, DECREMENT } from "../../store/actions/counterActions";
 // (4) react-redux の hooks を使用してみる
 // また Stateless Component から少し遠ざかるが connect を使用しなくて良いし、記述量は減って良い感じ
 // https://levelup.gitconnected.com/react-redux-hooks-useselector-and-usedispatch-f7d8c7f75cdd
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import CountUpButton from "./CountUpButton";
+import CountDownButton from "./CountDownButton";
 
 export default () => {
-  const dispatch = useDispatch();
   const count = useSelector((state: any) => state.count);
-
-  const handleClickIncrement = () => {
-    dispatch({ type: INCREMENT });
-  };
-  const handleClickDecrement = () => {
-    dispatch({ type: DECREMENT });
-  };
   return (
     <div>
       <h3>count: {count}</h3>
-      <button data-test="count-up" onClick={handleClickIncrement}>
-        ⬆︎
-      </button>
-      <button data-test="count-down" onClick={handleClickDecrement}>
-        ⬇︎
-      </button>
+      <CountUpButton />
+      <CountDownButton />
     </div>
   );
 };
