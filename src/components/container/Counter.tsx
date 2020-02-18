@@ -81,7 +81,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 export default () => {
   const dispatch = useDispatch();
-  const count = useSelector((state: any) => state.counter);
+  const count = useSelector((state: any) => state.count);
 
   const handleClickIncrement = () => {
     dispatch({ type: INCREMENT });
@@ -91,9 +91,13 @@ export default () => {
   };
   return (
     <div>
-      <div data-testid="count">count: {count}</div>
-      <button onClick={handleClickIncrement}>⬆︎</button>
-      <button onClick={handleClickDecrement}>⬇︎</button>
+      <h3>count: {count}</h3>
+      <button data-test="count-up" onClick={handleClickIncrement}>
+        ⬆︎
+      </button>
+      <button data-test="count-down" onClick={handleClickDecrement}>
+        ⬇︎
+      </button>
     </div>
   );
 };
