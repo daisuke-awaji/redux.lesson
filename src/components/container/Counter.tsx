@@ -8,7 +8,6 @@ import React from "react";
 //   const count = store.getState().counter;
 //   return (
 //     <div>
-//       <div data-testid="count">count: {count}</div>
 //       <button onClick={() => store.dispatch({ type: INCREMENT })}>⬆︎</button>
 //       <button onClick={() => store.dispatch({ type: DECREMENT })}>⬇︎</button>
 //     </div>
@@ -95,43 +94,41 @@ import React from "react";
 
 // (5) Reduxhookを使用しても Redux と React を分離する
 import { useSelector, useDispatch } from "react-redux";
-import { IRootState } from "../../store/reducer";
+import { IRootState } from "../../store/store";
 import { INCREMENT, DECREMENT } from "../../store/actions/counterActions";
 import { Dispatch } from "redux";
 
 interface ICounterProps {
   count: number;
-  handleClickIncrement: Dispatch;
-  handleClickDecrement: Dispatch;
+  increment: Dispatch;
+  decrement: Dispatch;
 }
 // Storybookなどでコンポーネントの振る舞いを検証しやすくするために
 // StatelessでPresentatinaComponentを作っておく。
 // Reduxとの接合はDIする。
-export const StatelessPresentationalCounterComponent = (
-  props: ICounterProps
-) => {
-  const { count, handleClickIncrement, handleClickDecrement } = props;
+export const Counter = (props: ICounterProps) => {
+  const { count, increment, decrement } = props;
   return (
     <div>
       <h3>count: {count}</h3>
-      <button data-test="count-up" onClick={handleClickIncrement}>
+      <button data-test="count-up" onClick={increment}>
         ⬆︎
       </button>
-      <button data-test="count-down" onClick={handleClickDecrement}>
+      <button data-test="count-down" onClick={decrement}>
         ⬇︎
       </button>
     </div>
   );
 };
 
-export default function ContainerCounterComponent(ownProps: any) {
+export default (props: any) => {
   const count = useSelector<IRootState>(state => state.count);
   const dispatch = useDispatch();
   const _props = {
     count,
-    handleClickIncrement: () => dispatch({ type: INCREMENT }),
-    handleClickDecrement: () => dispatch({ type: DECREMENT }),
-    ...ownProps
+    increment: () => dispatch({ type: INCREMENT }),
+    decrement: () => dispatch({ type: DECREMENT }),
+    ...props
   };
-  return <StatelessPresentationalCounterComponent {..._props} />;
-}
+  return <Counter {..._props} />;
+};

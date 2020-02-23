@@ -4,8 +4,8 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import sinon from "sinon";
 
-import Counter, { StatelessPresentationalCounterComponent } from "./Counter";
-import reducer from "../../store/reducer";
+import ConnectedCounter, { Counter } from "./Counter";
+import { reducer } from "../../store/store";
 import { INCREMENT } from "../../store/actions/counterActions";
 import CountUpButton from "./CountUpButton";
 
@@ -14,21 +14,19 @@ import testConfigure from "../../testConfigure";
 testConfigure();
 const sel = (id: string) => `[data-test="${id}"]`;
 
-describe("<StatelessCounterComponent /> unit test shallow", () => {
+describe("<Counter /> unit test shallow", () => {
   // shallow レンダリングしてコンポーネントのテストをすると早い
   // が、テストのためにプロダクトコードをかなり気を配って依存度を減らす必要がある。
   const props = {
     count: 0,
-    handleClickIncrement: sinon.spy(),
-    handleClickDecrement: sinon.spy()
+    increment: sinon.spy(),
+    decrement: sinon.spy()
   };
-  const shallowComponent = shallow(
-    <StatelessPresentationalCounterComponent {...props} />
-  );
+  const shallowComponent = shallow(<Counter {...props} />);
   it("should add to count and display the correct counts", () => {
     expect(shallowComponent.find("h3").text()).toEqual("count: 0");
     shallowComponent.find(sel("count-up")).simulate("click");
-    expect(props.handleClickIncrement).toHaveProperty("callCount", 1);
+    expect(props.increment).toHaveProperty("callCount", 1);
   });
 });
 
@@ -43,7 +41,7 @@ describe("<Counter /> unit test", () => {
   ) =>
     mount(
       <Provider store={mockStore}>
-        <Counter />
+        <ConnectedCounter />
       </Provider>
     );
   it("should add to count and display the correct counts", () => {
